@@ -1,21 +1,19 @@
 package hu.zalatnai.fhrclient.authorities
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
-data class Authority(
-    @JsonProperty("LocalAuthorityId") val id: Int,
-    @JsonProperty("Name") val name: String
-)
-
 @RestController
-class AuthoritiesController {
+class AuthoritiesController(val authoritiesClient: AuthoritiesClient) {
     @GetMapping("/authorities/{id}")
     fun getAuthorities(@PathVariable id: Int): Mono<ResponseEntity<List<Authority>>> {
-        return Mono.just(ResponseEntity.ok(emptyList()))
+        if (id <= 0) {
+            return Mono.just(ResponseEntity.badRequest().build())
+        }
+        
+        return authoritiesClient.getAuthoritiesById(1).map { authorityList -> ResponseEntity.ok(authorityList) }
     }
 }
