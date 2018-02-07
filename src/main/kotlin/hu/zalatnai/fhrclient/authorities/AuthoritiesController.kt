@@ -9,11 +9,13 @@ import reactor.core.publisher.Mono
 @RestController
 class AuthoritiesController(val authoritiesClient: AuthoritiesClient) {
     @GetMapping("/authorities/{id}")
-    fun getAuthorities(@PathVariable id: Int): Mono<ResponseEntity<List<Authority>>> {
+    fun getAuthority(@PathVariable id: Int): Mono<ResponseEntity<Authority>> {
         if (id <= 0) {
             return Mono.just(ResponseEntity.badRequest().build())
         }
-        
-        return authoritiesClient.getAuthoritiesById(1).map { authorityList -> ResponseEntity.ok(authorityList) }
+
+        return authoritiesClient.getAuthorityById(id)
+            .map { authority -> ResponseEntity.ok(authority) }
+            .onErrorReturn(ResponseEntity.notFound().build())
     }
 }

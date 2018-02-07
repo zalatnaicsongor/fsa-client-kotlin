@@ -24,29 +24,29 @@ class AuthoritiesControllerTest {
     fun setUp() {
         authoritiesController = AuthoritiesController(authoritiesClient)
 
-        `when`(authoritiesClient.getAuthoritiesById(1)).thenReturn(Mono.just(listOf(authority)))
+        `when`(authoritiesClient.getAuthorityById(1)).thenReturn(Mono.just(authority))
     }
 
     @Test
     fun `returns a bad request if the id is invalid`() {
         assertEquals(
             400,
-            authoritiesController.getAuthorities(0).block()?.statusCodeValue
+            authoritiesController.getAuthority(0).block()?.statusCodeValue
         )
     }
 
     @Test
     fun `delegates the call to the client`() {
-        authoritiesController.getAuthorities(1)
+        authoritiesController.getAuthority(1)
 
-        verify(authoritiesClient).getAuthoritiesById(1)
+        verify(authoritiesClient).getAuthorityById(1)
     }
 
     @Test
     fun `returns an ok response containing the result returned by the client`() {
         assertEquals(
-            listOf(authority),
-            authoritiesController.getAuthorities(1).block()?.body
+            authority,
+            authoritiesController.getAuthority(1).block()?.body
         )
     }
 }
