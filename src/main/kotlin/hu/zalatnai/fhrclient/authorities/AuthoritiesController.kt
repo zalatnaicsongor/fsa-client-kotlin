@@ -16,6 +16,6 @@ class AuthoritiesController(val authoritiesClient: AuthoritiesClient) {
 
         return authoritiesClient.getAuthorityById(id)
             .map { authority -> ResponseEntity.ok(authority) }
-            .onErrorReturn(ResponseEntity.notFound().build())
+            .onErrorResume { Mono.just(ResponseEntity.notFound().build()) }
     }
 }
